@@ -15,6 +15,11 @@ module Stripe
       end
     end
 
+    def source_transactions(params={}, opts={})
+      resp, opts = request(:get, resource_url + '/source_transactions', params, Util.normalize_opts(opts))
+      initialize_from(resp.data, opts)
+    end
+
     def verify(params={}, opts={})
       resp, opts = request(:post, resource_url + '/verify', params, Util.normalize_opts(opts))
       initialize_from(resp.data, opts)
