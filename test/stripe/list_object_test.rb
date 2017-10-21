@@ -36,7 +36,7 @@ module Stripe
                                            url: "/things")
       stub_request(:get, "#{Stripe.api_base}/things")
         .with(query: { starting_after: "1" })
-        .to_return(body: JSON.generate(data: [{ id: 2 }, { id: 3 }], has_more: false))
+        .to_return(body: JSON.generate(object: "list", data: [{ id: 2 }, { id: 3 }], has_more: false))
 
       assert_equal expected, list.auto_paging_each.to_a
     end
@@ -54,7 +54,7 @@ module Stripe
                                            url: "/things")
       stub_request(:get, "#{Stripe.api_base}/things")
         .with(query: { starting_after: "1" })
-        .to_return(body: JSON.generate(data: [{ id: 2 }, { id: 3 }], has_more: false))
+        .to_return(body: JSON.generate(object: "list", data: [{ id: 2 }, { id: 3 }], has_more: false))
 
       actual = []
       list.auto_paging_each do |obj|
@@ -81,7 +81,7 @@ module Stripe
                                            url: "/things")
       stub_request(:get, "#{Stripe.api_base}/things")
         .with(query: { starting_after: "1" })
-        .to_return(body: JSON.generate(data: [{ id: 2 }], has_more: false))
+        .to_return(body: JSON.generate(object: "list", data: [{ id: 2 }], has_more: false))
       next_list = list.next_page
       refute next_list.empty?
     end
@@ -93,7 +93,7 @@ module Stripe
       list.filters = { expand: ["data.source"], limit: 3 }
       stub_request(:get, "#{Stripe.api_base}/things")
         .with(query: { "expand[]" => "data.source", "limit" => "3", "starting_after" => "1" })
-        .to_return(body: JSON.generate(data: [{ id: 2 }], has_more: false))
+        .to_return(body: JSON.generate(object: "list", data: [{ id: 2 }], has_more: false))
       next_list = list.next_page
       assert_equal({ expand: ["data.source"], limit: 3 }, next_list.filters)
     end
@@ -115,7 +115,7 @@ module Stripe
                                            url: "/things")
       stub_request(:get, "#{Stripe.api_base}/things")
         .with(query: { ending_before: "2" })
-        .to_return(body: JSON.generate(data: [{ id: 1 }]))
+        .to_return(body: JSON.generate(object: "list", data: [{ id: 1 }]))
       next_list = list.previous_page
       refute next_list.empty?
     end
@@ -126,7 +126,7 @@ module Stripe
       list.filters = { expand: ["data.source"], limit: 3 }
       stub_request(:get, "#{Stripe.api_base}/things")
         .with(query: { "expand[]" => "data.source", "limit" => "3", "ending_before" => "2" })
-        .to_return(body: JSON.generate(data: [{ id: 1 }]))
+        .to_return(body: JSON.generate(object: "list", data: [{ id: 1 }]))
       next_list = list.previous_page
       assert_equal({ expand: ["data.source"], limit: 3 }, next_list.filters)
     end
